@@ -3,30 +3,34 @@ using UnityEngine;
 
 public class EnemyRespawnManager : MonoBehaviour
 {
-    public static EnemyRespawnManager instance;
+    private List<Enemy> enemies = new List<Enemy>();
 
-    public List<Enemy> enemies = new List<Enemy>();
-
-    void Awake()
+    void Start()
     {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(gameObject);
+        
+        Enemy[] sceneEnemies = Object.FindObjectsByType<Enemy>(FindObjectsSortMode.None);
+        foreach (Enemy e in sceneEnemies)
+        {
+            RegisterEnemy(e);
+        }
     }
 
     public void RegisterEnemy(Enemy enemy)
     {
         if (!enemy.isBoss && !enemies.Contains(enemy))
+        {
             enemies.Add(enemy);
+        }
     }
 
     public void RespawnEnemies()
     {
         foreach (var enemy in enemies)
         {
-            if (!enemy.isBoss)
+            if (enemy != null)
+            {
                 enemy.Respawn();
+            }
         }
     }
 }

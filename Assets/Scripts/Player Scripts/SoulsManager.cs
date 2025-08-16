@@ -4,18 +4,26 @@ using UnityEngine.UI;
 
 public class SoulsManager : MonoBehaviour
 {
-
     PlayerStats playerStats;
-    public Text soulsText;
+    private Text soulsText; 
+
+    public void Init(Text soulsLabel)
+    {
+        soulsText = soulsLabel;
+        UpdateSouls(); 
+    }
 
     void Start()
     {
-        playerStats = GetComponent<PlayerStats>();    
+        playerStats = GetComponent<PlayerStats>();
     }
 
     void Update()
     {
-        UpdateSouls();    
+        if (soulsText != null)
+        {
+            UpdateSouls();
+        }
     }
 
     public void AddSouls(int amount)
@@ -25,6 +33,9 @@ public class SoulsManager : MonoBehaviour
 
     public void UpdateSouls()
     {
-        soulsText.text = "X" + playerStats.soulsAmount;
+        if (soulsText != null)
+        {
+            soulsText.text = "X" + playerStats.soulsAmount.ToString(CultureInfo.InvariantCulture);
+        }
     }
 }

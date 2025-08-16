@@ -1,33 +1,58 @@
+using System.Collections;
 using UnityEngine;
 
 public class ParallaxMovement : MonoBehaviour
 {
-    Transform cam;           
-    Vector3 camStartPos;     
-    Vector3 startPos;        
-    public float parallaxFactor = 0.5f; 
+    private Transform cam;
+    private Vector3 previousCameraPosition;
+    public float parallaxMultiplierX = 0.5f;
+    public float parallaxMultiplierY = 0.5f;
 
-    void Start()
+    private void Start()
     {
-        cam = Camera.main.transform;       
-        camStartPos = cam.position;       
-        startPos = transform.position;     
+        StartCoroutine(WaitForCamera());
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
-        // Calcula cuánto se ha movido la cámara desde su posición inicial
-        Vector3 deltaMovement = cam.position - camStartPos;
+        if (cam == null) return;
 
-        // Aplica el factor de parallax
-        float newX = startPos.x + deltaMovement.x * parallaxFactor;
-        float newY = startPos.y + deltaMovement.y * parallaxFactor;
+        Vector3 deltaMovement = cam.position - previousCameraPosition;
 
-        // Redondea a 2 decimales para evitar jitter en cámara ortográfica
-        newX = Mathf.Round(newX * 100f) / 100f;
-        newY = Mathf.Round(newY * 100f) / 100f;
+        transform.position += new Vector3(
+            deltaMovement.x * parallaxMultiplierX,
+            deltaMovement.y * parallaxMultiplierY,
+            0f
+        );
 
-        // Asigna la nueva posición
-        transform.position = new Vector3(newX, newY, startPos.z);
+        previousCameraPosition = cam.position;
+    }
+
+    private System.Collections.IEnumerator WaitForCamera()
+    {
+        while (Camera.main == null)
+        {
+            yield return null;
+        }
+
+        cam = Camera.main.transform;
+        previousCameraPosition = cam.position;
+    }
+
+    public void ResetParallaxOrigin()
+    {
+        if (Camera.main == null) return;
+
+        cam = Camera.main.transform;
+        previousCameraPosition = cam.position;
+
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        float spriteWidth = sr != null ? sr.bounds.size.x : 0f;
+        float spriteHeight = sr != null ? sr.bounds.size.y : 0f;
+
+        float newX = cam.position.x - (spriteWidth * 0.5f * (1 - parallaxMultiplierX));
+        float newY = cam.position.y - (spriteHeight * 0.5f * (1 - parallaxMultiplierY));
+
+        transform.position = new Vector3(newX, newY, transform.position.z);
     }
 }

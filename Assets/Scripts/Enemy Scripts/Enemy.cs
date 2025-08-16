@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -22,7 +23,7 @@ public class Enemy : MonoBehaviour
         spawnRotation = transform.rotation;
         healthPoints = maxHealthPoints;
 
-        EnemyRespawnManager.instance.RegisterEnemy(this);
+        //EnemyRespawnManager.instance.RegisterEnemy(this);
 
 
     }
@@ -42,13 +43,22 @@ public class Enemy : MonoBehaviour
         transform.rotation = spawnRotation;
         healthPoints = maxHealthPoints;
 
-        GetComponent<SpriteRenderer>().material = GetComponent<Blink>().original;
-        if(GetComponent<EnemyHealth>().hasDeathAnimation == true)
-        {
-            GetComponent<Animator>().SetBool("death", false);
-        }
-        
-        gameObject.tag = "Enemy";
+        var spriteRenderer = GetComponent<SpriteRenderer>();
+        var blink = GetComponent<Blink>();
 
+        if (spriteRenderer != null && blink != null)
+        {
+            spriteRenderer.material = blink.original;
+        }
+
+        var enemyHealth = GetComponent<EnemyHealth>();
+        var animator = GetComponent<Animator>();
+
+        if (enemyHealth != null && enemyHealth.hasDeathAnimation && animator != null)
+        {
+            animator.SetBool("death", false);
+        }
+
+        gameObject.tag = "Enemy";
     }
 }

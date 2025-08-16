@@ -52,6 +52,7 @@ public class PlayerData
 
     public int soulsAmount;
 
+    public int[] comboDamages;
     public int comboDamageLevel;
     public int airAttackLevel;
     public int specialAttackDamageLevel;

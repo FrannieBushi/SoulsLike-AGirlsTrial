@@ -1,56 +1,105 @@
 using UnityEngine;
+using System.Linq;
 
 public class BonfireInteraction : MonoBehaviour
 {
     public GameObject interactIcon;
     public GameObject upgradeMenu;
-    public PauseMenuController pauseMenuController;
+
     private bool isPlayerNear = false;
     private PlayerStats playerStats;
     private bool enteredToMenu = false;
+
+    public Sprite keyboardSprite;
+    public Sprite playstationSprite;
+    public Sprite xboxSprite;
+
+    private PlayerInputHandler inputHandler;
 
     void Start()
     {
         interactIcon.SetActive(false);
 
-        
-        if (upgradeMenu != null)
+        if (UpgradeMenuController.instance != null)
         {
+            upgradeMenu = UpgradeMenuController.instance.gameObject;
             upgradeMenu.SetActive(false);
         }
-            
+
+        playerStats = PlayerStats.instance;
+        inputHandler = PlayerStats.instance?.GetComponent<PlayerInputHandler>();
     }
 
     void Update()
     {
-        if (isPlayerNear && Input.GetKeyDown(KeyCode.F))
+        if (upgradeMenu == null)
+            TryFindUpgradeMenu();
+
+        UpdateIcon();
+
+        bool canInteract = !PauseMenuController.GameIsPaused && inputHandler != null;
+
+        if (canInteract && isPlayerNear && inputHandler.interactionPressed)
         {
+            inputHandler.ResetInputs();
+
             playerStats.RestoreAll();
             SaveSystem.SavePlayer(playerStats, transform.position);
             Debug.Log("Interacción con la hoguera");
 
-            if (EnemyRespawnManager.instance != null)
+            var respawnManager = Object.FindFirstObjectByType<EnemyRespawnManager>();
+            if (respawnManager != null)
             {
-                EnemyRespawnManager.instance.RespawnEnemies();
+                respawnManager.RespawnEnemies();
             }
 
             if (upgradeMenu != null)
             {
                 enteredToMenu = true;
-                pauseMenuController.enabled = false;
-                upgradeMenu.SetActive(true);  
+                PauseMenuController.instance.enabled = false;
+                upgradeMenu.SetActive(true);
                 Time.timeScale = 0f;
             }
         }
 
-        if(enteredToMenu && Input.GetKeyDown(KeyCode.Escape))
+        if (canInteract && enteredToMenu && inputHandler.cancelPressed)
         {
             enteredToMenu = false;
-            pauseMenuController.enabled = true;
+            PauseMenuController.instance.enabled = true;
             upgradeMenu.SetActive(false);
             Time.timeScale = 1f;
         }
-           
+    }
+
+    void UpdateIcon()
+    {
+        if (isPlayerNear && LastInputDetector.instance != null)
+        {
+            switch (LastInputDetector.instance.LastDeviceUsed)
+            {
+                case LastInputDetector.InputDeviceType.KeyboardMouse:
+                    interactIcon.GetComponent<SpriteRenderer>().sprite = keyboardSprite;
+                    break;
+                case LastInputDetector.InputDeviceType.PlayStation:
+                    interactIcon.GetComponent<SpriteRenderer>().sprite = playstationSprite;
+                    break;
+                case LastInputDetector.InputDeviceType.Xbox:
+                    interactIcon.GetComponent<SpriteRenderer>().sprite = xboxSprite;
+                    break;
+            }
+        }
+    }
+
+    void TryFindUpgradeMenu()
+    {
+        UpgradeMenuController found = Resources.FindObjectsOfTypeAll<UpgradeMenuController>()
+        .FirstOrDefault(x => x.gameObject.hideFlags == HideFlags.None);
+
+        if (found != null)
+        {
+            upgradeMenu = found.gameObject;
+            upgradeMenu.SetActive(false);
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -60,7 +109,8 @@ public class BonfireInteraction : MonoBehaviour
             interactIcon.SetActive(true);
             isPlayerNear = true;
 
-            playerStats = other.GetComponent<PlayerStats>();
+            playerStats = PlayerStats.instance;
+            inputHandler = PlayerStats.instance?.GetComponent<PlayerInputHandler>();
         }
     }
 
@@ -71,6 +121,7 @@ public class BonfireInteraction : MonoBehaviour
             interactIcon.SetActive(false);
             isPlayerNear = false;
             playerStats = null;
+            inputHandler = null;
         }
     }
 }

@@ -24,15 +24,15 @@ AnimationClip:
       value: {fileID: -462089481855149415, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
     - time: 0
       value: {fileID: -2342578581327544653, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
-    - time: 0.2
+    - time: 0.16666667
       value: {fileID: -8734000926435645031, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
-    - time: 0.4
+    - time: 0.33333334
       value: {fileID: 8393228190085559091, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
-    - time: 0.6
+    - time: 0.5
       value: {fileID: 6225408735427886755, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
-    - time: 0.8
+    - time: 0.6666667
       value: {fileID: 240611032735907248, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
-    - time: 1
+    - time: 0.8333333
       value: {fileID: 7846808509639407469, guid: 38a16d2ddbfe7ce4a94c7c07d5c6023c, type: 3}
     attribute: m_Sprite
     path: 
@@ -68,7 +68,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.0166667
+    m_StopTime: 0.84999996
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -95,14 +95,14 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.45
+  - time: 0.36666667
     functionName: StepSoundOn
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.8
+  - time: 0.73333335
     functionName: StepSoundOn
     data: 
     objectReferenceParameter: {fileID: 0}

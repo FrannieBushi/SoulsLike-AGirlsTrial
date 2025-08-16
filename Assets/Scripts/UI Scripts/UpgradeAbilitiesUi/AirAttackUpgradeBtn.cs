@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 
 public class AirAttackUpgradeBtn : MonoBehaviour
@@ -14,21 +15,29 @@ public class AirAttackUpgradeBtn : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(WaitForDependenciesAndInitialize());
+
         upgradeButton = GetComponent<Button>();
-        UpdateButton();
-        upgradeButton.onClick.AddListener(ApplyUpgrade);
+
+        //UpdateButton();
+        //upgradeButton.onClick.AddListener(ApplyUpgrade);
     }
 
     void Update()
     {
-        UpdateButton();
+        if (upgradeManager != null &&
+        upgradeManager.upgradesData != null &&
+        playerStats != null)
+        {
+            UpdateButton();
+        }
     }
 
     void UpdateButton()
     {
         if (playerStats == null || upgradeManager == null || upgradeManager.upgradesData == null)
         {
-            Debug.LogWarning("Faltan referencias en air");
+            Debug.LogWarning("Faltan referencias en MaxHealthUpgradeButton");
             return;
         }
 
@@ -37,13 +46,17 @@ public class AirAttackUpgradeBtn : MonoBehaviour
         if (currentLevel >= upgradeManager.upgradesData.airAttackDamage.Count)
         {
             buttonText.text = "Air Attack : MAX";
-            upgradeButton.interactable = false;
+            buttonText.color = Color.gray;
+            buttonTextCost.text = "";
+
+            upgradeButton.interactable = true; // sigue navegable
+            upgradeButton.onClick.RemoveAllListeners(); // no hace nada si se pulsa
             return;
         }
 
         var nextUpgrade = upgradeManager.upgradesData.airAttackDamage[currentLevel];
 
-        buttonText.text = $"Upgrade the damage of air attacks  {nextUpgrade.value}";
+        buttonText.text = $"Upgrade air attack damage to {nextUpgrade.value}";
         buttonTextCost.text = $"X {nextUpgrade.cost}";
 
         if (playerStats.soulsAmount >= nextUpgrade.cost)
@@ -51,19 +64,25 @@ public class AirAttackUpgradeBtn : MonoBehaviour
             buttonText.color = Color.black;
             buttonTextCost.color = Color.black;
             upgradeButton.interactable = true;
+
+            // Evita añadir listeners duplicados
+            upgradeButton.onClick.RemoveAllListeners();
+            upgradeButton.onClick.AddListener(ApplyUpgrade);
         }
         else
         {
             buttonText.color = Color.red;
             buttonTextCost.color = Color.red;
-            upgradeButton.interactable = false;
+
+            upgradeButton.interactable = true; // sigue navegable
+            upgradeButton.onClick.RemoveAllListeners(); // no hace nada si se pulsa
         }
     }
 
     void ApplyUpgrade()
     {
         int currentLevel = playerStats.airAttackLevel;
-        
+
         if (currentLevel >= upgradeManager.upgradesData.airAttackDamage.Count)
             return;
 
@@ -78,4 +97,26 @@ public class AirAttackUpgradeBtn : MonoBehaviour
             UpdateButton();
         }
     }
+    
+    private IEnumerator WaitForDependenciesAndInitialize()
+    {
+        while (playerStats == null)
+        {
+            playerStats = PlayerStats.instance;
+            yield return null;
+        }
+
+
+        while (upgradeManager == null || upgradeManager.upgradesData == null)
+        {
+            upgradeManager = FindAnyObjectByType<UpgradeManager>();
+            yield return null;
+        }
+
+
+        upgradeButton = GetComponent<Button>();
+        UpdateButton();
+        upgradeButton.onClick.AddListener(ApplyUpgrade);
+    }
+
 }

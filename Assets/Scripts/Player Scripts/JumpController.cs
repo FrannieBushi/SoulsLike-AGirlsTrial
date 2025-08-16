@@ -38,63 +38,68 @@ public class JumpController : MonoBehaviour
 
     void Update()
     {
-        if (IsGrounded())
+        if(!PauseMenuController.GameIsPaused)
         {
-            coyoteTime = Time.time + coyoteConfing;
-            jumpCount = 0;
-
-            animationManager.isJumping = false;
-            animationManager.isFalling = false;
-
-            GetComponent<CombatController>().canAirAttack = true;
-        }
-
-        if (animationManager.isFalling)
-        {
-            RaycastHit2D closeHit = Physics2D.Raycast(transform.position, Vector2.down, fallCancelDistance, groundLayer);
-            if (closeHit.collider != null)
+            if (IsGrounded())
             {
-                Debug.Log("idle");
+                coyoteTime = Time.time + coyoteConfing;
+                jumpCount = 0;
+
+                animationManager.isJumping = false;
                 animationManager.isFalling = false;
+
+                GetComponent<CombatController>().canAirAttack = true;
             }
-        }
 
-        if (rb.linearVelocity.y < -0.1f && !IsGrounded())
-        {
-            animationManager.isFalling = true;
-            //animationManager.isJumping = false;
-        }
+            if (animationManager.isFalling)
+            {
+                RaycastHit2D closeHit = Physics2D.Raycast(transform.position, Vector2.down, fallCancelDistance, groundLayer);
+                if (closeHit.collider != null)
+                {
+                    Debug.Log("idle");
+                    animationManager.isFalling = false;
+                }
+            }
 
-        if (inputHandler.jumpPressed && !animationManager.isDrinking)
-        {
-            jumpPressed = true;
-            inputHandler.ResetInputs();
+            if (rb.linearVelocity.y < -0.1f && !IsGrounded())
+            {
+                animationManager.isFalling = true;
+            }
+
+            if (inputHandler.jumpPressed && !animationManager.isDrinking)
+            {
+                jumpPressed = true;
+                inputHandler.ResetInputs();
+            }
         }
     }
 
     private void FixedUpdate()
     {
-        if (jumpPressed)
+        if (!PauseMenuController.GameIsPaused)
         {
-            if (Time.time <= coyoteTime && jumpCount == 0)
+            if (jumpPressed)
             {
-                DoJump();
-            }
-            else if (jumpCount > 0 && jumpCount < maxJumpCount && playerStats.doubleJumpUnlock)
-            {
-                DoJump();
+                if (Time.time <= coyoteTime && jumpCount == 0)
+                {
+                    DoJump();
+                }
+                else if (jumpCount > 0 && jumpCount < maxJumpCount && playerStats.doubleJumpUnlock)
+                {
+                    DoJump();
+                }
+
+                jumpPressed = false;
             }
 
-            jumpPressed = false;
-        }
-
-        if (rb.linearVelocity.y < 0)
-        {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
-        }
-        else if (rb.linearVelocity.y > 0 && !inputHandler.jumpHeld)
-        {
-            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            if (rb.linearVelocity.y < 0)
+            {
+                rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+            }
+            else if (rb.linearVelocity.y > 0 && !inputHandler.jumpHeld)
+            {
+                rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.fixedDeltaTime;
+            }
         }
     }
 

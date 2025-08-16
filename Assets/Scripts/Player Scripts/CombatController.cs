@@ -60,6 +60,7 @@ public class CombatController : MonoBehaviour
             else if (!animationManager.isJumping && !animationManager.isFalling)
             {
                 attacking = true;
+                ResetAllAttackTriggers();
                 anim.SetTrigger("" + combo);
                 GenerateAttackId();
             }
@@ -83,7 +84,7 @@ public class CombatController : MonoBehaviour
     {
         attacking = false;
 
-        if (combo < 3)
+        if (combo < 2)
         {
             combo++;
         }
@@ -91,6 +92,7 @@ public class CombatController : MonoBehaviour
 
     public void FinishAnimation()
     {
+        Debug.Log("Animación de ataque finalizada");
         attacking = false;
         combo = 0;
     }
@@ -129,6 +131,16 @@ public class CombatController : MonoBehaviour
         anim.ResetTrigger("2");
         anim.ResetTrigger("AirAttack");
         animationManager.specialAttack = false;
+    }
+
+    public void ResetAllAttackTriggers()
+    {
+        anim.ResetTrigger("0");
+        anim.ResetTrigger("1");
+        anim.ResetTrigger("2");
+        anim.ResetTrigger("AirAttack");
+        anim.ResetTrigger("SpecialAttack");
+
     }
 
     public void SoundOfComboOn()

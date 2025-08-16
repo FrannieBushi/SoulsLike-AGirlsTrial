@@ -1,21 +1,38 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
+    public static PauseMenuController instance;
+
     public GameObject pauseMenuUI;
     private PlayerInput playerInput;
     private bool isPaused = false;
     public GameObject firstSelected;
+    public Slider volumeSlider;
+    public static bool GameIsPaused { get; private set; }
+
+    [SerializeField] private AudioMixer audioMixer;
 
     void Awake()
     {
-        playerInput = GetComponent<PlayerInput>();
+        bool destroy = instance != null && instance != this;
 
-        if (playerInput == null)
+        if (!destroy)
         {
-            Debug.LogError("No se encontró PlayerInput en el GameObject.");
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            playerInput = GetComponent<PlayerInput>();
+        }
+
+        if (destroy)
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -37,10 +54,8 @@ public class PauseMenuController : MonoBehaviour
 
     private void OnActionTriggered(InputAction.CallbackContext context)
     {
-        // Detecta la acción "Pause" en cualquier mapa activo
         if (context.action.name == "Pause" && context.performed)
         {
-            Debug.Log("Se pulsó Pause");
             TogglePause();
         }
     }
@@ -56,26 +71,62 @@ public class PauseMenuController : MonoBehaviour
     public void Resume()
     {
         pauseMenuUI.SetActive(false);
-        Time.timeScale = 1f;
         isPaused = false;
+        GameIsPaused = false;
 
-        playerInput.SwitchCurrentActionMap("Player");
+        GetComponent<PlayerInputHandler>()?.ResetInputs();
+
+        StartCoroutine(ResumeAfterDelay());
+
+        Time.timeScale = 1f;
     }
 
-    private void Pause()
+    public void Pause()
     {
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
+        GameIsPaused = true;
+
+        GetComponent<JumpController>().enabled = false;
+        GetComponent<DodgeController>().enabled = false;
+        GetComponent<PlayerController>().enabled = false;
+        GetComponent<PotionManagerController>().enabled = false;
+        GetComponent<CombatController>().enabled = false;
 
         playerInput.SwitchCurrentActionMap("UI");
 
-        EventSystem.current.SetSelectedGameObject(null); 
+        EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(firstSelected);
     }
 
     public void Close()
     {
         Application.Quit();
+
+        //SceneManager.LoadScene("Transition"); --> Error por dontdestroyonload;
+    }
+
+    private IEnumerator ResumeAfterDelay()
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        GetComponent<JumpController>().enabled = true;
+        GetComponent<DodgeController>().enabled = true;
+        GetComponent<PlayerController>().enabled = true;
+        GetComponent<PotionManagerController>().enabled = true;
+        GetComponent<CombatController>().enabled = true;
+
+        playerInput.SwitchCurrentActionMap("Player");
+
+    }
+    
+    public void ChangeVolume(float value)
+    {
+        float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+        audioMixer.SetFloat("Volume", dB);
+
+        PlayerPrefs.SetFloat("volume", value); 
+        PlayerPrefs.Save(); 
     }
 }

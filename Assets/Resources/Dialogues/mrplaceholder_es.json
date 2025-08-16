@@ -1,0 +1,16 @@
+{
+  "lines": [
+    { "speaker": "Don Placeholder", "text": "Oye, ¿no te parece raro que la luz venga de frente... y la luna esté justo detrás de nosotros?" },
+    { "speaker": "Vin", "text": "Ahora que lo dices... sí. ¿No debería estar todo en sintonía?" },
+    { "speaker": "Don Placeholder", "text": "Nah, es cosa del parallax. Dos capas: ciudad brillante al frente, luna gigante atrás. Funciona... si no lo piensas mucho." },
+    { "speaker": "Vin", "text": "¿Entonces vivimos en una maqueta de cartón con filtros bonitos?" },
+    { "speaker": "Don Placeholder", "text": "Más o menos. Pero míralo por el lado bueno: la ciudad brilla lo suficiente para justificar este sombrero con reflejos en tiempo real." },
+    { "speaker": "Vin", "text": "No te voy a mentir, lo primero que noté fue tu sombrero. Brilla más que la luna." },
+    { "speaker": "Don Placeholder", "text": "El sombrero tiene más presupuesto que yo como personaje." },
+    { "speaker": "Vin", "text": "¿Y tú qué haces aquí, además de romper la cuarta pared con estilo?" },
+    { "speaker": "Don Placeholder", "text": "Cumplo con mi rol: decir frases crípticas, señalar errores de diseño, y ofrecer misiones que nadie pidió." },
+    { "speaker": "Vin", "text": "¿Qué tipo de misión? Por favor dime que no involucra recolectar partículas flotantes sin hitbox." },
+    { "speaker": "Don Placeholder", "text": "No, no. Esta vez son engranajes que no giran. Mucho más sofisticado." },
+    { "speaker": "Vin", "text": "(Este tipo es demasiado autoconsciente para su propio bien.)" }
+  ]
+}

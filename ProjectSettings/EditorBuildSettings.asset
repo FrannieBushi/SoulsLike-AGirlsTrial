@@ -9,11 +9,29 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: ac5c85c7b8f8a034f8709e6c02a52ca6
   - enabled: 1
+    path: Assets/Scenes/Options.unity
+    guid: 0cf3deaf18367e54684f30215328f5e6
+  - enabled: 1
     path: Assets/Scenes/CinematicIntro.unity
     guid: d9d1513446149d64ea7582101e3cb812
   - enabled: 1
+    path: Assets/Scenes/DeathScene.unity
+    guid: 0c26dc310d07ff84ebff8beaa4662dee
+  - enabled: 1
     path: Assets/Scenes/Graveyard01.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/Town.unity
+    guid: fab61377638ba524f90bee8006b27e58
+  - enabled: 1
+    path: Assets/Scenes/Graveyard02.unity
+    guid: 5e5842ff7507aa648afd5ac3814a4aa1
+  - enabled: 1
+    path: Assets/Scenes/Credits.unity
+    guid: 9ce67c728d896e0419640825f18d67fa
+  - enabled: 1
+    path: Assets/Scenes/Transition.unity
+    guid: f14bc40469e8c3846acedc6d0054745f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

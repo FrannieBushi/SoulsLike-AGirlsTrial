@@ -1,0 +1,16 @@
+{
+  "lines": [
+    { "speaker": "MrPlaceholder", "text": "Hey, doesn't it seem weird to you that the light's coming from the front... and the moon is right behind us?" },
+    { "speaker": "Vin", "text": "Now that you mention it... yeah. Shouldn’t everything be in sync?" },
+    { "speaker": "MrPlaceholder", "text": "Nah, it’s a parallax thing. Two layers: shiny city up front, giant moon in the back. Works fine... as long as you don’t think too hard." },
+    { "speaker": "Vin", "text": "So we live in a cardboard diorama with pretty filters?" },
+    { "speaker": "MrPlaceholder", "text": "More or less. But hey, the city glows just enough to justify this hat’s real-time reflections." },
+    { "speaker": "Vin", "text": "Not gonna lie, the first thing I noticed *was* your hat. It shines brighter than the moon." },
+    { "speaker": "MrPlaceholder", "text": "The hat got a bigger budget than me as a character." },
+    { "speaker": "Vin", "text": "So what do you do here, besides breaking the fourth wall in style?" },
+    { "speaker": "MrPlaceholder", "text": "I fulfill my purpose: speak cryptic lines, point out design flaws, and hand out quests nobody asked for." },
+    { "speaker": "Vin", "text": "What kind of quest? Please don’t say it involves collecting floating particles with no hitbox." },
+    { "speaker": "MrPlaceholder", "text": "No, no. This time it’s gears that don’t spin. Much more sophisticated." },
+    { "speaker": "Vin", "text": "(This guy is way too self-aware for his own good.)" }
+  ]
+}

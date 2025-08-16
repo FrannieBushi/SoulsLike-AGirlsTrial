@@ -1,14 +1,13 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-
-
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
     public float health;
     public float maxHealth;
-    public Image healthImage;
+    private Image healthImage; 
     bool isInmune;
     public float InmunityTime;
     Blink material;
@@ -23,7 +22,14 @@ public class PlayerHealth : MonoBehaviour
     public AudioClip sound;
     PlayerStats playerStats;
 
-
+    public void Init(Image healthBarImage)
+    {
+        healthImage = healthBarImage;
+        if (healthImage != null)
+        {
+            healthImage.fillAmount = playerStats.health / playerStats.maxHealth;
+        }
+    }
 
     void Start()
     {
@@ -37,29 +43,29 @@ public class PlayerHealth : MonoBehaviour
         animationManager = GetComponent<PlayerAnimationManager>();
         combatController = GetComponent<CombatController>();
         audioSource = GetComponent<AudioSource>();
-        
     }
 
     void Update()
     {
-
-        if(playerStats.health > playerStats.maxHealth)
+        if (playerStats.health > playerStats.maxHealth)
         {
             playerStats.health = playerStats.maxHealth;
         }
 
-        healthImage.fillAmount = playerStats.health/playerStats.maxHealth;
-
+        if (healthImage != null)
+        {
+            healthImage.fillAmount = playerStats.health / playerStats.maxHealth;
+        }
     }
 
     private void HealedByPotion(int amountRestauration)
     {
-        playerStats.health += amountRestauration;    
+        playerStats.health += amountRestauration;
     }
 
     public void RestoreHealth(float healthRestored)
     {
-        if(playerStats.health + healthRestored > playerStats.maxHealth)
+        if (playerStats.health + healthRestored > playerStats.maxHealth)
         {
             playerStats.health = playerStats.maxHealth;
         }
@@ -67,7 +73,6 @@ public class PlayerHealth : MonoBehaviour
         {
             playerStats.health += healthRestored;
         }
-   
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -88,7 +93,7 @@ public class PlayerHealth : MonoBehaviour
 
             if (playerStats.health <= 0)
             {
-                
+                SceneManager.LoadScene("DeathScene");
             }
         }
     }
@@ -102,7 +107,7 @@ public class PlayerHealth : MonoBehaviour
     {
         isInmune = true;
         combatController.CancelAttack();
-        if(!animationManager.isJumping && !animationManager.isFalling)
+        if (!animationManager.isJumping && !animationManager.isFalling)
         {
             animationManager.isHurted = true;
         }
@@ -110,6 +115,5 @@ public class PlayerHealth : MonoBehaviour
         yield return new WaitForSeconds(InmunityTime);
         sprite.material = material.original;
         isInmune = false;
-
     }
 }

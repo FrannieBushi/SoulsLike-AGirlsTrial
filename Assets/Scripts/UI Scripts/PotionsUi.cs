@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
 
 public class PotionsUi : MonoBehaviour
 {
@@ -15,14 +16,21 @@ public class PotionsUi : MonoBehaviour
 
     void Awake()
     {
-        potionManager.potionsChange.AddListener(ChangePotions);   
+        DontDestroyOnLoad(this.gameObject);
+
+        if (potionManager == null)
+        {
+            potionManager = GameObject.FindGameObjectWithTag("Player").GetComponent<PotionManagerController>();
+        }
+
+        StartCoroutine(DelayedInit());
     }
 
     private void ChangePotions(int potions)
     {
-        if(!potionsList.Any())
+        if (!potionsList.Any())
         {
-            CreatePotions(potions);    
+            CreatePotions(potions);
         }
         else
         {
@@ -36,16 +44,16 @@ public class PotionsUi : MonoBehaviour
         {
             GameObject potion = Instantiate(potionPrefab, transform);
 
-            potionsList.Add(potion.GetComponent<Image>());   
+            potionsList.Add(potion.GetComponent<Image>());
         }
 
-        actualIndex = maxPotions - 1;    
+        actualIndex = maxPotions - 1;
     }
 
     private void ChangeAmountPotions(int actualPotions)
     {
 
-        if(actualPotions <= actualIndex)
+        if (actualPotions <= actualIndex)
         {
             RemovePotion(actualPotions);
         }
@@ -53,7 +61,7 @@ public class PotionsUi : MonoBehaviour
         {
             AddPotions(actualPotions);
         }
-        
+
     }
 
     private void RemovePotion(int actualPotions)
@@ -63,7 +71,7 @@ public class PotionsUi : MonoBehaviour
             actualIndex = i;
             potionsList[actualIndex].sprite = emptyPotion;
         }
-        
+
     }
 
     private void AddPotions(int actualPotions)
@@ -73,7 +81,28 @@ public class PotionsUi : MonoBehaviour
             actualIndex = i;
             potionsList[actualIndex].sprite = fullPotion;
         }
-        
+
+    }
+    
+    private IEnumerator DelayedInit()
+    {
+        yield return null;
+        yield return null;
+
+        if (potionManager == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                potionManager = player.GetComponent<PotionManagerController>();
+            }
+        }
+
+        if (potionManager != null)
+        {
+            potionManager.potionsChange.AddListener(ChangePotions);
+            ChangePotions(potionManager.GetCurrentPotions());
+        }
     }
 
 }

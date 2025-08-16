@@ -1,0 +1,14 @@
+{
+  "lines": [
+    { "speaker": "Mr.Meowsplaining", "text": "Hi there, I see you're a helpless girl, let me guide you through the basic mechanics of soulslike games." },
+    { "speaker": "Vin", "text": "What’s your deal?" },
+    { "speaker": "Vin", "text": "(Why is my text blue?)." },
+    { "speaker": "Vin", "text": "(Am I Phoenix Wright?)." },
+    { "speaker": "Mr.Meowsplaining", "text": "Well, it’s normal to feel scared — this isn’t really a game for girls. But don’t worry, with my advice you’ll be fine." },
+    { "speaker": "Vin", "text": "OBJECTION!" },
+    { "speaker": "Mr.Meowsplaining", "text": "Uhh... What?" },
+    { "speaker": "Vin", "text": "Nothing, sorry. Had to do it. Go on." },
+    { "speaker": "Mr.Meowsplaining", "text": "Right... as I was saying, there’s a bonfire behind me. You can rest there to heal, level up your skills, and save your progress." },
+    { "speaker": "Vin", "text": "Okay, thanks. (Everything he told me is common knowledge, but I guess I appreciate the effort.)" }
+  ]
+}

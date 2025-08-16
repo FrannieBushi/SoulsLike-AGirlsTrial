@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class ComboDamageUpgradeBtn : MonoBehaviour
 {
@@ -13,32 +14,41 @@ public class ComboDamageUpgradeBtn : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(WaitForDependenciesAndInitialize());
         upgradeButton = GetComponent<Button>();
-        UpdateButton();
-        upgradeButton.onClick.AddListener(ApplyUpgrade);
+        //UpdateButton();
+        //upgradeButton.onClick.AddListener(ApplyUpgrade);
     }
 
     void Update()
     {
-        UpdateButton();
+        if (upgradeManager != null &&
+        upgradeManager.upgradesData != null &&
+        playerStats != null)
+        {
+            UpdateButton();
+        }
     }
 
     void UpdateButton()
     {
-        if (playerStats == null || upgradeManager == null || upgradeManager.upgradesData == null)
-            return;
 
         int currentLevel = playerStats.comboDamageLevel;
 
         if (currentLevel >= upgradeManager.upgradesData.comboDamages.Count)
         {
-            buttonText.text = "Combo Damage: MAX";
-            upgradeButton.interactable = false;
+            buttonText.text = "Combo damage : MAX";
+            buttonText.color = Color.gray;
+            buttonTextCost.text = "";
+
+            upgradeButton.interactable = true;
+            upgradeButton.onClick.RemoveAllListeners();
             return;
         }
 
         var nextUpgrade = upgradeManager.upgradesData.comboDamages[currentLevel];
-        buttonText.text = $"Upgrade Combo damage to : {nextUpgrade.values[0]} / {nextUpgrade.values[1]} / {nextUpgrade.values[2]}";
+
+        buttonText.text = $"Upgrade combo damages to [{string.Join(", ", nextUpgrade.values)}]";
         buttonTextCost.text = $"X {nextUpgrade.cost}";
 
         if (playerStats.soulsAmount >= nextUpgrade.cost)
@@ -46,12 +56,18 @@ public class ComboDamageUpgradeBtn : MonoBehaviour
             buttonText.color = Color.black;
             buttonTextCost.color = Color.black;
             upgradeButton.interactable = true;
+
+            // Evita añadir listeners duplicados
+            upgradeButton.onClick.RemoveAllListeners();
+            upgradeButton.onClick.AddListener(ApplyUpgrade);
         }
         else
         {
             buttonText.color = Color.red;
             buttonTextCost.color = Color.red;
-            upgradeButton.interactable = false;
+
+            upgradeButton.interactable = true; // sigue navegable
+            upgradeButton.onClick.RemoveAllListeners(); // no hace nada si se pulsa
         }
     }
 
@@ -77,4 +93,26 @@ public class ComboDamageUpgradeBtn : MonoBehaviour
             UpdateButton();
         }
     }
+    
+    private IEnumerator WaitForDependenciesAndInitialize()
+    {
+        while (playerStats == null)
+        {
+            playerStats = PlayerStats.instance;
+            yield return null;
+        }
+
+
+        while (upgradeManager == null || upgradeManager.upgradesData == null)
+        {
+            upgradeManager = FindAnyObjectByType<UpgradeManager>();
+            yield return null;
+        }
+
+
+        upgradeButton = GetComponent<Button>();
+        UpdateButton();
+        upgradeButton.onClick.AddListener(ApplyUpgrade);
+    }
+
 }

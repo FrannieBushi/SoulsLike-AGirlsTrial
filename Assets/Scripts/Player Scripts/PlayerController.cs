@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
         animManager = GetComponent<PlayerAnimationManager>();
         audioSource = GetComponent<AudioSource>();   
         inputHandler = GetComponent<PlayerInputHandler>();
+
     }
 
     void Update()

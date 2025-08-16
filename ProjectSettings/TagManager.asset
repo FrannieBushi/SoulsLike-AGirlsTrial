@@ -10,6 +10,8 @@ TagManager:
   - EnemyDead
   - Item
   - Npc
+  - Room
+  - Parallax
   layers:
   - Default
   - TransparentFX
@@ -49,6 +51,9 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 3274674559
+    locked: 0
+  - name: Exits
+    uniqueID: 825190691
     locked: 0
   - name: UI
     uniqueID: 4086863085

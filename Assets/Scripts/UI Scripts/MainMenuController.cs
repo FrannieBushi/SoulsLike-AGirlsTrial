@@ -37,7 +37,7 @@ public class MainMenuController : MonoBehaviour
         SelectButton(currentIndex);
     }
 
-    void Update()
+    /*void Update()
     {
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -54,7 +54,7 @@ public class MainMenuController : MonoBehaviour
             PressSelectedButton();
             audioSource.PlayOneShot(audioClip);
         }
-    }
+    }*/
 
     void MoveSelection(int direction)
     {
@@ -82,17 +82,15 @@ public class MainMenuController : MonoBehaviour
     public void OnNewGame()
     {
         Debug.Log("Intentando cargar escena: " + firstSceneName);
-        
+
         if (File.Exists(savePath))
         {
             File.Delete(savePath);
         }
-
         if (GameManager.instance == null)
         {
             Debug.LogError("GameManager no encontrado.");
         }
-
         else
         {
             GameManager.instance.StartNewGame();
@@ -105,23 +103,19 @@ public class MainMenuController : MonoBehaviour
     {
         if (File.Exists(savePath))
         {
-            GameManager.instance.ContinueGame();
-            string sceneToLoad = SaveSystem.GetSavedSceneName();
+            PlayerPrefs.SetInt("loadedFromSave", 1);
 
-            if (!string.IsNullOrEmpty(sceneToLoad))
+            if (FindFirstObjectByType<GameBootstrapper>() == null)
             {
-                SceneManager.LoadScene(sceneToLoad);
-            }
-            else
-            {
-                Debug.LogWarning("No se encontró el nombre de la escena en el guardado.");
+                GameObject bootstrap = new GameObject("GameBootstrapper");
+                bootstrap.AddComponent<GameBootstrapper>();
             }
         }
     }
 
     public void OnOptions()
     {
-        Debug.Log("Opciones aún no implementadas.");
+        SceneManager.LoadScene("Options");
     }
 
     public void OnExit()
@@ -129,5 +123,5 @@ public class MainMenuController : MonoBehaviour
         Application.Quit();
         Debug.Log("Salir del juego");
     }
-       
+    
 }

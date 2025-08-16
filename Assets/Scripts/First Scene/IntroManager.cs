@@ -5,6 +5,7 @@ using System.IO;
 using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System;
 
 [System.Serializable]
 public class DialogueData
@@ -35,12 +36,12 @@ public class IntroManager : MonoBehaviour
     {
         dialogueText.text = "";
         languagePanel.SetActive(true);
-        
+
         languageButtons = new Button[] { btnEspañol, btnEnglish };
         selectedButtonIndex = 0;
         EventSystem.current.SetSelectedGameObject(languageButtons[selectedButtonIndex].gameObject);
 
-        audioSource = GetComponent<AudioSource>(); 
+        audioSource = GetComponent<AudioSource>();
 
     }
 
@@ -48,13 +49,13 @@ public class IntroManager : MonoBehaviour
     {
         PlayerPrefs.SetString("language", langCode);
         Debug.Log("Botón pulsado. Idioma: " + langCode);
-        languagePanel.SetActive(false); 
+        languagePanel.SetActive(false);
         LoadDialogue(langCode);
-        
+
         if (lines != null && lines.Length > 0)
         {
-        Debug.Log("Diálogos cargados correctamente. Iniciando TypeLine.");
-        StartCoroutine(TypeLine());
+            Debug.Log("Diálogos cargados correctamente. Iniciando TypeLine.");
+            StartCoroutine(TypeLine());
         }
         else
         {
@@ -66,7 +67,7 @@ public class IntroManager : MonoBehaviour
     {
         string path = Path.Combine(Application.streamingAssetsPath, $"dialogues_{lang}.json");
         string json = File.ReadAllText(path);
-        
+
         DialogueData data = JsonUtility.FromJson<DialogueData>(json);
 
         lines = data.lines;
@@ -98,7 +99,7 @@ public class IntroManager : MonoBehaviour
             }
 
             return;
-    
+
         }
 
         if (lines == null || lines.Length == 0)
@@ -147,8 +148,19 @@ public class IntroManager : MonoBehaviour
             StartCoroutine(TypeLine());
         }
         else
-        {   
-            SceneManager.LoadScene("Graveyard01");
+        {
+            StartCoroutine(FadeTransition());
         }
+    }
+
+    IEnumerator FadeTransition()
+    {
+        yield return ScreenFader.instance.FadeOut();
+
+        GameObject bootstrap = new GameObject("GameBootstrapper");
+        bootstrap.AddComponent<GameBootstrapper>();
+        //PlayerPrefs.SetInt("loadedFromSave", 0);
+        PlayerPrefs.DeleteKey("loadedFromSave");
+        SceneManager.LoadScene("Graveyard01"); 
     }
 }

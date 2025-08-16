@@ -19,6 +19,8 @@ public class EnemyHealth : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip sound;
 
+    public bool RespawnEnemy;
+
     void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
@@ -31,7 +33,7 @@ public class EnemyHealth : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Weapon")  /* && !isDamaged*/)
+        if (collision.CompareTag("Weapon"))
         {
             WeaponHitbox weapon = collision.GetComponent<WeaponHitbox>();
             if (!weapon.attackID.Equals(lastAttackID))
@@ -53,19 +55,31 @@ public class EnemyHealth : MonoBehaviour
 
                 StartCoroutine(Damager());
 
-                if (enemy.healthPoints <= 0 && !hasDeathAnimation && !enemy.isBoss)
+                if (enemy.healthPoints <= 0 && RespawnEnemy)
                 {
-                    audioSource.PlayOneShot(sound); 
+                    Destroy(gameObject);   
+                }
+
+                else if (enemy.healthPoints <= 0 && !hasDeathAnimation && !enemy.isBoss)
+                {
+                    audioSource.PlayOneShot(sound);
                     enemy.DropSoul();
                     Instantiate(deathEffect, transform.position, Quaternion.identity);
                     gameObject.SetActive(false);
                 }
 
-                if (enemy.healthPoints <= 0 && hasDeathAnimation)
+                else if (enemy.healthPoints <= 0 && hasDeathAnimation)
                 {
-                    audioSource.PlayOneShot(sound); 
+                    audioSource.PlayOneShot(sound);
                     gameObject.tag = "EnemyDead";
                     anim.SetBool("death", true);
+                }
+
+                else if (enemy.healthPoints <= 0 && enemy.isBoss && !hasDeathAnimation)
+                {
+                    //DestroyGameObject();
+                    gameObject.tag = "EnemyDead";
+                    enemy.healthPoints = 0;
                 }
             }
         }
@@ -88,13 +102,10 @@ public class EnemyHealth : MonoBehaviour
         enemy.DropSoul();
     }
     
-    //Metodo para evitar que se dañe a un enemigo varias veces en la misma animacion de ataque:
     IEnumerator Damager()
     {
-        //isDamaged = true;
         sprite.material = material.blink;
         yield return new WaitForSeconds(0.2f);
-        //isDamaged = false;
         sprite.material = material.original;
     }
 }

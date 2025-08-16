@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class MaxManaUpgradeButton : MonoBehaviour
 {
@@ -13,36 +14,42 @@ public class MaxManaUpgradeButton : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(WaitForDependenciesAndInitialize());
+
         upgradeButton = GetComponent<Button>();
-        UpdateButton();
-        upgradeButton.onClick.AddListener(ApplyUpgrade);
+        //UpdateButton();
+        //upgradeButton.onClick.AddListener(ApplyUpgrade);
     }
 
     void Update()
     {
-        UpdateButton();
+        if (upgradeManager != null &&
+        upgradeManager.upgradesData != null &&
+        playerStats != null)
+        {
+            UpdateButton();
+        }
     }
 
     void UpdateButton()
     {
-        if (playerStats == null || upgradeManager == null || upgradeManager.upgradesData == null)
-        {
-            Debug.LogWarning("Faltan referencias en MaxHealthUpgradeButton");
-            return;
-        }
 
         int currentLevel = playerStats.maxManaLevel;
 
         if (currentLevel >= upgradeManager.upgradesData.maxMana.Count)
         {
             buttonText.text = "Mana : MAX";
-            upgradeButton.interactable = false;
+            buttonText.color = Color.gray;
+            buttonTextCost.text = "";
+
+            upgradeButton.interactable = true; // sigue navegable
+            upgradeButton.onClick.RemoveAllListeners(); // no hace nada si se pulsa
             return;
         }
 
         var nextUpgrade = upgradeManager.upgradesData.maxMana[currentLevel];
 
-        buttonText.text = $"Upgrade Max Mana to {nextUpgrade.value}";
+        buttonText.text = $"Upgrade max mana to {nextUpgrade.value}";
         buttonTextCost.text = $"X {nextUpgrade.cost}";
 
         if (playerStats.soulsAmount >= nextUpgrade.cost)
@@ -50,19 +57,25 @@ public class MaxManaUpgradeButton : MonoBehaviour
             buttonText.color = Color.black;
             buttonTextCost.color = Color.black;
             upgradeButton.interactable = true;
+
+            // Evita añadir listeners duplicados
+            upgradeButton.onClick.RemoveAllListeners();
+            upgradeButton.onClick.AddListener(ApplyUpgrade);
         }
         else
         {
             buttonText.color = Color.red;
             buttonTextCost.color = Color.red;
-            upgradeButton.interactable = false;
+
+            upgradeButton.interactable = true; // sigue navegable
+            upgradeButton.onClick.RemoveAllListeners(); // no hace nada si se pulsa
         }
     }
 
     void ApplyUpgrade()
     {
         int currentLevel = playerStats.maxManaLevel;
-        
+
         if (currentLevel >= upgradeManager.upgradesData.maxMana.Count)
             return;
 
@@ -76,5 +89,26 @@ public class MaxManaUpgradeButton : MonoBehaviour
 
             UpdateButton();
         }
+    }
+    
+    private IEnumerator WaitForDependenciesAndInitialize()
+    {
+        while (playerStats == null)
+        {
+            playerStats = PlayerStats.instance;
+            yield return null;
+        }
+
+
+        while (upgradeManager == null || upgradeManager.upgradesData == null)
+        {
+            upgradeManager = FindAnyObjectByType<UpgradeManager>();
+            yield return null;
+        }
+
+
+        upgradeButton = GetComponent<Button>();
+        UpdateButton();
+        upgradeButton.onClick.AddListener(ApplyUpgrade);
     }
 }

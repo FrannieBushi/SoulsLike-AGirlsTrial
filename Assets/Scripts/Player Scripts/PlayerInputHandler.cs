@@ -10,6 +10,9 @@ public class PlayerInputHandler : MonoBehaviour
     public bool usePotionPressed;
     public bool attackPressed;
     public bool specialAttackPressed;
+    public bool interactionPressed;
+    public bool cancelPressed;
+    public bool submitPressed;
 
     private PlayerInputActions inputActions;
 
@@ -37,6 +40,10 @@ public class PlayerInputHandler : MonoBehaviour
 
         inputActions.Player.Attack.performed += ctx => attackPressed = true;
         inputActions.Player.SpecialAttack.performed += ctx => specialAttackPressed = true;
+
+        inputActions.Player.Interaction.performed += ctx => interactionPressed = true;
+        inputActions.Ui.Cancel.performed += ctx => cancelPressed = true;
+        inputActions.Ui.Submit.performed += ctx => submitPressed = true;
     }
 
     private void OnEnable() => inputActions.Enable();
@@ -49,6 +56,9 @@ public class PlayerInputHandler : MonoBehaviour
         usePotionPressed = false;
         attackPressed = false;
         specialAttackPressed = false;
+        interactionPressed = false;
+        cancelPressed = false;
+        submitPressed = false;
     }
     
 }

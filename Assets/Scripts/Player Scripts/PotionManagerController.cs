@@ -81,6 +81,8 @@ public class PotionManagerController : MonoBehaviour
         audioSource.PlayOneShot(sound);    
     }
 
+    public int GetCurrentPotions() => playerStats.potions;
+
     IEnumerator DrinkPotionRoutine()
     {
         playerController.enabled = false;

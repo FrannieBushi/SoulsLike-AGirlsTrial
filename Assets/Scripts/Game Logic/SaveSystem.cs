@@ -22,6 +22,7 @@ public static class SaveSystem
             doubleJumpUnlock = stats.doubleJumpUnlock,
             dodgeUnlocked = stats.dodgeUnlocked,
             soulsAmount = stats.soulsAmount,
+            comboDamages = stats.comboDamages,
             comboDamageLevel = stats.comboDamageLevel,
             airAttackLevel = stats.airAttackLevel,
             specialAttackDamageLevel = stats.specialAttackDamageLevel,
@@ -68,6 +69,7 @@ public static class SaveSystem
 
         stats.soulsAmount = data.soulsAmount;
 
+        stats.comboDamages = data.comboDamages;
         stats.comboDamageLevel = data.comboDamageLevel;
         stats.airAttackLevel = data.airAttackLevel;
         stats.specialAttackDamageLevel = data.specialAttackDamageLevel;
@@ -85,5 +87,19 @@ public static class SaveSystem
         string json = File.ReadAllText(savePath);
         PlayerData data = JsonUtility.FromJson<PlayerData>(json);
         return data.sceneName;
-    }    
+    } 
+
+    public static Vector3 GetSavedPlayerPosition()
+    {
+        if (!File.Exists(savePath))
+        {
+            Debug.LogWarning("No se encontró el archivo de guardado.");
+            return Vector3.zero;
+        }
+
+        string json = File.ReadAllText(savePath);
+        PlayerData data = JsonUtility.FromJson<PlayerData>(json);
+        return new Vector3(data.bonfireX, data.bonfireY, data.bonfireZ);
+    }   
 }
+

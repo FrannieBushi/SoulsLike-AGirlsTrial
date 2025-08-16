@@ -18,7 +18,7 @@ En desarrollo.
 
 Clonar este repositorio:
 
-1.git clone https://github.com/usuario/souls-like-a-girls-trial.git
+1.git clone https://github.com/FrannieBushi/SoulsLike-AGirlsTrial.git
 
 2.Abrir el proyecto en Unity.
 
@@ -44,7 +44,7 @@ In development.
 
 Clone this repository:
 
-1.git clone https://github.com/username/souls-like-a-girls-trial.git
+1.git clone https://github.com/FrannieBushi/SoulsLike-AGirlsTrial.git
 
 2.Open the project in Unity.
 
